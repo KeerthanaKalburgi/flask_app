@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Request</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .request {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+
+        .request-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .employee-name {
+            font-weight: bold;
+        }
+
+        .project-name {
+            font-style: italic;
+        }
+
+        .employee-skill {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .actions {
+            text-align: center;
+        }
+
+        .btn {
+            padding: 5px 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-accept {
+            background-color: #007BFF;
+            color: #fff;
+        }
+
+        .btn-reject {
+            background-color: #FF4500;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <center><h1>Moving Horizons</h1></center>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('hr_dashboard') }}">HR Dashboard</a></li>
+                <li><div class="filters">
+                        <b>Projects</b><br>
+                        <select name="Skill" id="skill-select">
+                            <option value="All">All</option>
+                            {% for skill in projects %}
+                                <option value="{{ skill }}">{{ skill }}</option>
+                            {% endfor %}
+                        </select>
+                    </div></li>
+
+            </ul>
+        </nav>
+      </div>
+    <div class="flash-message" style="text-align: center;">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+    <div class="container">
+    <h2>Employee Requests</h2>
+    {% for request in requests %}
+    <div class="request" data-domain = {{ request.pname }}>
+        <div class="request-info">
+            <div>
+                <p class="employee-name">{{ request.ename }}</p>
+                <p class="project-name">Project: {{ request.pname }}</p>
+                <p class="employee-skill">Skills: {{ request.emp_skills }}</p>
+            </div>
+            <div class="actions">
+                <form action="{{ url_for('emp_accept') }}" method="POST">
+                    <input type="hidden" name="ename" value="{{ request.ename }}">
+                    <input type="hidden" name="pname" value="{{ request.pname }}">
+                    <button class="btn btn-accept" type="submit">Accept</button>
+                </form>
+                <form action="{{ url_for('emp_reject') }}" method="POST">
+                    <input type="hidden" name="ename" value="{{ request.ename }}">
+                    <input type="hidden" name="pname" value="{{ request.pname }}">
+                    <button class="btn btn-reject" type="submit">Reject</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    document.getElementById('skill-select').addEventListener('change', function() {
+            var value = this.value;
+            var projects = document.getElementsByClassName('request');
+            
+            for (var i = 0; i < projects.length; i++) {
+                var project = projects[i];
+                var skills = project.querySelector('.project-name').textContent;
+
+                if (value === 'All' || skills.includes(value)) {
+                    project.style.display = 'block';
+                } else {
+                    project.style.display = 'none';
+                }
+            }
+            });
+</script>
+
+</script>
+
+</body>
+</html>

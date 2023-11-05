@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Project</title>
+    <style>
+        body {
+          margin: 0;
+          padding: 0;
+          font-family: Arial, sans-serif;
+        }
+      
+        .header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 20px;
+          background-color: #c180d1;
+          color: #fff;
+        }
+        /* Add a style rule for the h1 element */
+        h1 {
+        /* Set the text alignment to center */
+          text-align: center;
+        }
+      
+          .menu-items {
+                display: flex;
+                align-items: center;
+          }
+      
+        .logo {
+          width: 100px;
+          height: 100px;
+        }
+      
+        .profile-button {
+          background-color: transparent;
+          color: #fff;
+          border: none;
+          margin-right: 10px;
+          cursor: pointer;
+        }
+      
+        .main-content {
+          padding: 20px;
+        }
+      
+        .section {
+          display: flex;
+          margin-bottom: 30px;
+        }
+      
+        .section-image {
+          flex: 1;
+          text-align: center;
+        }
+      
+        .section-image img {
+          max-width: 100%;
+          height: auto;
+        }
+      
+        .section-content {
+          flex: 2;
+          padding: 20px;
+          background-color: #f9f9f9;
+          border-radius: 10px;
+        }
+      
+        .section-button {
+          background-color: #007bff;
+          color: #fff;
+          padding: 10px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+      
+        .about-company {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background-color: #c180d1;
+          padding: 20px;
+          border-top: 1px solid #ccc;
+        }
+        a {
+          text-decoration: none;
+          color: #f9f9f9;
+        }
+      
+        .about-person {
+          flex: 1;
+          text-align: center;
+        }
+      
+        .about-person img {
+          max-width: 100px;
+          height: auto;
+          border-radius: 50%;
+          margin-bottom: 10px;
+        }
+      
+        .colorful-text {
+          color: #007bff;
+        }
+        #profile-popup {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.7);
+          justify-content: center;
+          align-items: center;
+          z-index: 3; /* Ensure it's above other elements */
+      }
+      
+      /* Popup Content */
+      .popup-content {
+          background-color: #fff;
+          padding: 20px;
+          border-radius: 20px;
+          text-align: center;
+          max-width: 400px; /* Adjust the width as needed */
+          margin-top: 200px;
+      }
+      
+      /* Close Button */
+      .close {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          font-size: 20px;
+          font-weight: bold;
+          cursor: pointer;
+      }
+      
+    </style>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="date"], textarea {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        .checkbox-label {
+        display: flex;
+        align-items: center;
+      }
+
+        .checkbox-label input[type="checkbox"] {
+        margin-right: 10px; /* Adjust the spacing as needed */
+      }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="/static/images/company-logo-removebg-preview.png" alt="Company Logo" class="logo">
+        <h1>Moving Horizons</h1>
+        <div class="menu-items">
+          <li><a href="{{url_for('hr_dashboard')}}" class="Home">Home</a></li>
+          <li><a href="{{ url_for('login') }}" class="profile-button">Logout</a></li>
+        </div>
+        <!-- Add a h1 element with the text Moving Horizons -->
+        
+      </div>
+      <div class="flash-message" style="text-align: center;">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+    <div class="container">
+        <h2>Add New Project</h2>
+  <form action="{{ url_for('add_new_project') }}" method="POST">
+    <label for="pname">Project Name (20 characters max):</label>
+    <input type="text" id="pname" name="pname" maxlength="20" required>
+
+    <label for="pdomain">Project Domain (Select from existing domains):</label>
+    <select id="pdomain" name="pdomain" required>
+        {% for domain in domains %}
+            <option value="{{ domain }}">{{ domain }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="pdesc">Project Description (200 characters max):</label>
+    <textarea id="pdesc" name="pdesc" rows="2" maxlength="200" required></textarea>
+
+    <label for="needed">Needed (Integer Value):</label>
+    <input type="number" id="needed" name="needed" required>
+
+    <label for="present">Present (Integer Value):</label>
+    <input type="number" id="present" name="present" required>
+
+    <label for="manager">Manager (Select from available managers):</label>
+    <select id="manager" name="manager" required>
+      {% for employee in employees %}
+          <option value="{{ employee['ename'] }}">{{ employee['ename'] }}</option>
+      {% endfor %}
+    </select>
+
+
+    <label>Skills (Select 2 or 3):</label>
+    {% for course in courses %}
+        <div class="checkbox-label"> 
+            <input type="checkbox" name="skills[]" value="{{ course['skill'] }}" id="{{ course['skill'] }}">
+            <label for="{{ course['skill'] }}">{{ course['skill'] }}</label>
+        </div>
+    {% endfor %}
+
+
+    <button type="submit">Add Project</button>
+</form>
+
+    </div>
+</body>
+</html>
