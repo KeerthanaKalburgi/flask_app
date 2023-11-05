@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ongoing Projects</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <header>
+        <img src="/static/images/company-logo-removebg-preview.png" alt="Company Logo" class="logo">
+        <h1>Moving Horizons</h1>
+        <nav>
+            <ul>
+                {% if session['pid'] is none %}
+                <li><a href="{{ url_for('hr_dashboard') }}">HR Dashboard</a></li>
+                {% else %}
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                {% endif %}
+
+                <li class="dropdown">
+                    <b>Domain</b><br>
+                    <select name="Domain" id="domain-select">
+                        <option value="All">All</option>
+                        {% for domain in domains %}
+                            <option value="{{ domain }}">{{ domain }}</option>
+                        {% endfor %}
+                    </select>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="project-list">
+        {% for project in projects %}
+        <div class="project-template" data-domain="{{ project.pdomain }}">
+                <h2>{{ project.pname }}</h2>
+                <p class="project-description">
+                    {{ project.pdesc }}
+                    <br>
+                    <span class="team-leader">Team Leader: {{ project.ename }}</span><br>
+                    <span class="email">Email: {{ project.email }}</span>
+                </p>
+            </div>
+        {% endfor %}
+    </div>
+    <script src="/static/css/scripts.js"></script>
+    <script>
+        document.getElementById('domain-select').addEventListener('change', function() {
+            var value = this.value;
+            var projects = document.getElementsByClassName('project-template');
+            
+            for (var i = 0; i < projects.length; i++) {
+                var project = projects[i];
+                var domain = project.getAttribute('data-domain');
+                
+                if (value === 'All' || domain === value) {
+                    project.style.display = 'block';
+                } else {
+                    project.style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
