@@ -50,7 +50,7 @@ def login():
         else:
             flash("Invalid email")
 
-    return render_template("login.html")
+    return render_template("Login.html")
 
 
 @app.route("/hr_dashboard")
