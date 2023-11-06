@@ -118,14 +118,14 @@ def add_project(pid, pdomain, pdesc, pname, needed, present, skill_ids, manageri
         "c": present,
     }
     params_manager = {"x": pid, "y": managerid}
-    params_employee = {"x": managerid}
+    params_employee = {"x": managerid,"y":pid}
 
     conn.execute(
         text("INSERT INTO project VALUES (:x, :y, :z, :a, :b, :c);"), params_project
     )
     conn.execute(text("INSERT INTO manager values (:x, :y);"), params_manager)
     conn.execute(
-        text("UPDATE employee SET pid = NULL, managerid = NULL WHERE eid = :x;"),
+        text("UPDATE employee SET pid = :y, managerid = NULL WHERE eid = :x;"),
         params_employee,
     )
 
