@@ -111,7 +111,8 @@
             <div>
                 <p class="employee-name">{{ request.ename }}</p>
                 <p class="project-name">Project: {{ request.pname }}</p>
-                <p class="employee-skill">Skills: {{ request.emp_skills }}</p>
+                <p class="employee-skill">Employee Skills: {{ request.emp_skills }}</p>
+                <p class="employee-skill">Project Skills: {{ request.project_skills }}</p>
             </div>
             <div class="actions">
                 <form action="{{ url_for('emp_accept') }}" method="POST">
