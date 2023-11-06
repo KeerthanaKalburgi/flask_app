@@ -203,6 +203,7 @@ def emp_reject():
 
 @app.route("/ongoing_projects")
 def ongoing_projects():
+    project_df = get_project_df()
     projects = project_df.to_dict("records")
     domains = project_df["pdomain"].unique().tolist()
     return render_template("ongoing projects.html", projects=projects, domains=domains)
@@ -210,6 +211,7 @@ def ongoing_projects():
 
 @app.route("/available_projects", methods=["GET", "POST"])
 def available_projects():
+    project_df = get_project_df()
     projects = project_df.loc[
         (project_df["present"] < project_df["needed"])
         & (project_df["pid"] != session["pid"])
