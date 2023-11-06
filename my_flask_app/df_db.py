@@ -29,7 +29,7 @@ def get_emp_df():
         "pname",
         "pid",
         "pdomain",
-        "mnane",
+        "mname",
         "mmail",
         "managerid",
         "ename",
@@ -118,7 +118,7 @@ def add_project(pid, pdomain, pdesc, pname, needed, present, skill_ids, manageri
         "c": present,
     }
     params_manager = {"x": pid, "y": managerid}
-    params_employee = {"x": managerid,"y":pid}
+    params_employee = {"x": managerid, "y": pid}
 
     conn.execute(
         text("INSERT INTO project VALUES (:x, :y, :z, :a, :b, :c);"), params_project
@@ -168,7 +168,7 @@ def add_course(cid, skill, duration, cname, clink):
 def accept_emp(pid, eid):
     conn.execute(
         text("UPDATE request SET status = 'Accepted' WHERE pid = :x AND eid = :y;"),
-        {"x": pid, "y": eid}
+        {"x": pid, "y": eid},
     )
     conn.commit()
 
