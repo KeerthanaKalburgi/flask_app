@@ -4,8 +4,6 @@ from flask import Flask, session
 
 app = Flask(__name__)
 
-# Secret key for session management
-app.secret_key = "your_secret_key_here"
 
 # Import your routes
 from routes import *
