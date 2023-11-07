@@ -176,12 +176,16 @@ def new_course():
 def request_page():
     flash("")
     request_df = get_request_df(get_emp_df(), get_project_df())
+    # Convert 'project_skills' and 'emp_skills' into strings
+    request_df['project_skills'] = request_df['project_skills'].apply(', '.join)
+    request_df['emp_skills'] = request_df['emp_skills'].apply(', '.join)
     requests = request_df.loc[
         request_df["status"] == "Pending",
         ["pname", "ename", "project_skills", "emp_skills"],
     ].to_dict("records")
     projects = list(request_df.loc[request_df["status"] == "Pending", "pname"].unique())
     return render_template("request.html", requests=requests, projects=projects)
+
 
 
 @app.route("/emp_accept", methods=["GET", "POST"])
