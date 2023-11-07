@@ -104,7 +104,7 @@ def add_new_employee():
             flash("Unsuccessful! Change email email already exists")
             return redirect("/add_new_employee")
         else:
-            add_employe(pwd, pid, managerid, ename, email, eid, dept, skill_ids)
+            add_employee(pwd, pid, managerid, ename, email, eid, dept, skill_ids)
             flash("Onboarded succesfully!")
             return redirect("/add_new_employee")
     return render_template(
