@@ -3,10 +3,6 @@ from app import app
 import pandas as pd
 from df_db import *
 
-emp_df = get_emp_df()
-project_df = get_project_df()
-request_df = get_request_df(emp_df, project_df)
-
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -15,6 +11,7 @@ def index():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    emp_df = get_emp_df()
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
@@ -55,6 +52,7 @@ def login():
 
 @app.route("/hr_dashboard")
 def hr_dashboard():
+    emp_df = get_emp_df()
     user_data = emp_df.loc[emp_df["eid"] == session["eid"]].iloc[0]
     return render_template(
         "HR Dashboard.html",
@@ -66,6 +64,7 @@ def hr_dashboard():
 
 @app.route("/dashboard")
 def dashboard():
+    emp_df = get_emp_df()
     user_data = emp_df.loc[emp_df["eid"] == session["eid"]].iloc[0]
     # Convert skills list to string
     user_skills = ", ".join(session["skills"])
@@ -101,9 +100,13 @@ def add_new_employee():
         pid = project_df.loc[project_df["pname"].isin(project), "pid"].values[0]
         managerid = project_df.loc[project_df["pname"].isin(project), "eid"].values[0]
         pwd = "password" + str(len(emp_df.index))
-        add_employe(pwd, pid, managerid, ename, email, eid, dept, skill_ids)
-        flash("Onboarded succesfully")
-        return redirect("/add_new_employee")
+        if email in emp_df["email"].values:
+            flash("Unsuccessful! Change email email already exists")
+            return redirect("/add_new_employee")
+        else:
+            add_employe(pwd, pid, managerid, ename, email, eid, dept, skill_ids)
+            flash("Onboarded succesfully!")
+            return redirect("/add_new_employee")
     return render_template(
         "add new employee.html",
         emp_dept_values=emp_dept_values,
@@ -134,9 +137,15 @@ def add_new_project():
         manager_id = emp_df.loc[emp_df["ename"] == manager, "eid"].values[0]
         skills = request.form.getlist("skills[]")
         skill_ids = courses_df.loc[courses_df["skill"].isin(skills), "cid"]
-        add_project(pid, pdomain, pdesc, pname, needed, present, skill_ids, manager_id)
-        flash(f" Accepted succesfully")
-        return redirect("/add_new_project")
+        if pname in project_df["pname"].values:
+            flash(f"Project already existing")
+            return redirect("/add_new_project")
+        else:
+            add_project(
+                pid, pdomain, pdesc, pname, needed, present, skill_ids, manager_id
+            )
+            flash(f" Accepted succesfully")
+            return redirect("/add_new_project")
 
     return render_template(
         "add new projects.html", employees=employees, domains=domains, courses=courses
@@ -153,8 +162,12 @@ def new_course():
         duration = int(request.form.get("duration"))
         cname = request.form.get("cname")
         clink = request.form.get("clink")
-        add_course(cid, skill, duration, cname, clink)
-        flash("Course added sucessfully")
+        if skill in courses_df["skill"].values:
+            flash(f"{skill} already exists select a different courses")
+            return redirect("/new_course")
+        else:
+            add_course(cid, skill, duration, cname, clink)
+            flash("Course added sucessfully")
         return redirect("/new_course")
     return render_template("add new couses.html")
 
@@ -167,10 +180,8 @@ def request_page():
         request_df["status"] == "Pending",
         ["pname", "ename", "project_skills", "emp_skills"],
     ].to_dict("records")
-    projects = list(request_df.loc[
-        request_df["status"] == "Pending",
-        "pname"].unique())
-    return render_template("request.html", requests=requests,projects = projects)
+    projects = list(request_df.loc[request_df["status"] == "Pending", "pname"].unique())
+    return render_template("request.html", requests=requests, projects=projects)
 
 
 @app.route("/emp_accept", methods=["GET", "POST"])
@@ -211,6 +222,7 @@ def ongoing_projects():
 
 @app.route("/available_projects", methods=["GET", "POST"])
 def available_projects():
+    emp_df = get_emp_df()
     project_df = get_project_df()
     projects = project_df.loc[
         (project_df["present"] < project_df["needed"])
@@ -241,6 +253,7 @@ def available_projects():
 
 @app.route("/courses")
 def courses():
+    emp_df = get_emp_df()
     courses_df = get_courses()
     user_data = emp_df.loc[emp_df["eid"] == session["eid"]].iloc[0]
     # Convert skills list to string
