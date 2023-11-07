@@ -169,7 +169,7 @@ def new_course():
             add_course(cid, skill, duration, cname, clink)
             flash("Course added sucessfully")
         return redirect("/new_course")
-    return render_template("add new couses.html")
+    return render_template("Add new couses.html")
 
 
 @app.route("/request_page", methods=["GET", "POST"])
